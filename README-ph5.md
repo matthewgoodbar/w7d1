@@ -11,7 +11,8 @@ In this phase, you will use `current_user` to give `Cat`s an owner and
 
 - Add an `owner_id` column to `cats`. As always, index the foreign key and
   assign a `foreign_key` constraint.
-- Add `owner` and `cats` associations with appropriate modifiers.
+- Add `owner` and `cats` associations with appropriate modifiers. (Don't forget
+  `inverse_of` where needed!)
 - In the `create` action of the `CatsController`, you'll need to be sure
   `owner_id` gets set to the current user's id.
 

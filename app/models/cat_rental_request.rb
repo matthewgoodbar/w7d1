@@ -12,7 +12,7 @@
 #
 class CatRentalRequest < ApplicationRecord
   # .freeze renders constants immutable
-  STATUS_STATES = %w(APPROVED DENIED PENDING).freeze
+  STATUS_STATES = %w[APPROVED DENIED PENDING].freeze
 
   validates :status, inclusion: STATUS_STATES
   # The `presence` of `status` is guaranteed if it is included in
@@ -22,11 +22,12 @@ class CatRentalRequest < ApplicationRecord
   validate :does_not_overlap_approved_request
 
   belongs_to :cat
-  
+
   after_initialize :assign_pending_status
 
   def approve!
     raise 'not pending' unless self.status == 'PENDING'
+
     transaction do
       self.status = 'APPROVED'
       self.save!
@@ -143,15 +144,14 @@ class CatRentalRequest < ApplicationRecord
     # A denied request doesn't need to be checked. A pending request
     # should be checked; users shouldn't be able to make requests for
     # periods during which a cat has already been spoken for.
-    return if self.denied?
+    return if self.denied? || overlapping_approved_requests.empty?
 
-    unless overlapping_approved_requests.empty?
-      errors.add(:base, 'Request conflicts with existing approved request')
-    end
+    errors.add(:base, 'Request conflicts with existing approved request')
   end
 
   def start_must_come_before_end
     return if start_date < end_date
+
     errors.add(:start_date, 'must come before end date')
     errors.add(:end_date, 'must come after start date')
   end

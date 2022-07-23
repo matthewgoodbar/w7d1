@@ -27,33 +27,6 @@ to the top level of your __Gemfile__ and `bundle install`.
 
 Don't forget to create your db!
 
-Finally, one significant change has been made to yesterday's solution. At the
-beginning of yesterday's project, you added this line to
-__config/application.rb__:
-
-```rb
-config.action_controller.default_protect_from_forgery = false
-```
-
-As was noted at the time, you added this line because you did not need to worry
-about CSRF attacks.
-
-Today, however, you are older, wiser. Now you know not only what CSRF attacks
-are, but also how to defend against them. This line has accordingly been
-removed. Your app is now protected from Cross-Site Request Forgery (yes!), but
-that means you will need to authenticate all of your own form requests by
-including a CSRF authenticity token like this:
-
-```rb
-<input
-  type="hidden"
-  name="authenticity_token"
-  value="<%= form_authenticity_token %>"
->
-```
-
-In fact, you might want to go ahead and address all of the existing forms now...
-
 ## Phase IV: Users
 
 You will start today's work by building user functionality.
@@ -136,7 +109,7 @@ Build a `SessionsController`:
   in.
   - Use a [`before_action`] filter at the top of each controller to accomplish
     this.
-  - Write the filter method in **applicationcontroller.rb** so it can be
+  - Write the filter method in **application_controller.rb** so it can be
     accessed in both `UsersController` and `SessionsController`.
   - Name the filter `require_logged_out`. It should simply redirect a user to
     the cats index if there is a current user.
